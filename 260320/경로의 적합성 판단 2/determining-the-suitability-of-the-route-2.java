@@ -31,8 +31,8 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i = 2; i<=k; i++){
-            if(find(i-1) != find(i)){
+        for(int i = 1; i<k; i++){
+            if(find(arr[i-1]) != find(arr[i])){
                 is = 0;
                 break;
             }
