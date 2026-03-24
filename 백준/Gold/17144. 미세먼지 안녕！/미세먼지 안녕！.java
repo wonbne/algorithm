@@ -13,6 +13,7 @@ public class Main {
     static int[] dy = { 0, 0, -1, 1 };
     static int[][] air;
     static int[][] diff;
+    static Queue<int[]> queue = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -34,7 +35,7 @@ public class Main {
                 }
             }
         }
-        for(int i = 0; i<t; i++){
+        for (int i = 0; i < t; i++) {
             spread();
             purify();
         }
@@ -50,7 +51,7 @@ public class Main {
     }
 
     public static void spread() {
-        Queue<int[]> queue = new LinkedList<>();
+
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
                 if (arr[i][j] > 0) {
@@ -58,7 +59,7 @@ public class Main {
                 }
             }
         }
-        for(int i = 0; i<r; i++){
+        for (int i = 0; i < r; i++) {
             Arrays.fill(diff[i], 0);
         }
         while (!queue.isEmpty()) {
