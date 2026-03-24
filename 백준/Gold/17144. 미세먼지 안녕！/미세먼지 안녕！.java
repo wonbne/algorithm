@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -11,6 +12,7 @@ public class Main {
     static int[] dx = { -1, 1, 0, 0 };
     static int[] dy = { 0, 0, -1, 1 };
     static int[][] air;
+    static int[][] diff;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,6 +22,7 @@ public class Main {
         t = Integer.parseInt(st.nextToken());
         arr = new int[r][c];
         air = new int[2][2];
+        diff = new int[r][c];
         int airCount = 0;
         for (int i = 0; i < r; i++) {
             st = new StringTokenizer(br.readLine().trim());
@@ -55,8 +58,9 @@ public class Main {
                 }
             }
         }
-        int[][] diff = new int[r][c]; // 임시 저장 배열
-
+        for(int i = 0; i<r; i++){
+            Arrays.fill(diff[i], 0);
+        }
         while (!queue.isEmpty()) {
             int[] tmp = queue.poll();
             int x = tmp[0];
