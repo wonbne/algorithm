@@ -1,45 +1,54 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 public class Solution {
-    static int[][] arr;
-    static boolean[] visited;
-    static int count;
-    static int n;
-    public static void main(String[] args) throws IOException{
+    static int n, m;
+    static int[] parent;
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int t = Integer.parseInt(br.readLine().trim());
         for(int tc = 1; tc<=t; tc++){
             StringTokenizer st = new StringTokenizer(br.readLine().trim());
             n = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken());
-            arr = new int[n+1][n+1];
-            visited = new boolean[n+1];
-            count = 0;
-            for(int k = 0; k<m; k++){
+            m = Integer.parseInt(st.nextToken());
+
+            parent = new int[n+1];
+            for(int i = 0; i<=n; i++){
+                parent[i] = i;
+            }
+            for(int i = 0; i<m; i++){
                 st = new StringTokenizer(br.readLine().trim());
-                int i = Integer.parseInt(st.nextToken());
-                int j = Integer.parseInt(st.nextToken());
-                arr[i][j] = arr[j][i] = 1;
+                int a = Integer.parseInt(st.nextToken());
+                int b = Integer.parseInt(st.nextToken());
+                union(a,b);
             }
+            Set<Integer> set = new HashSet<>();
             for(int i = 1; i<=n; i++){
-                if(!visited[i]){
-                    dfs(i);
-                    count++;
-                }
+                set.add(find(i));
             }
-            System.out.println("#"+tc+" "+count);
+            System.out.println("#"+tc+" "+set.size());
         }
     }
 
-    static void dfs(int x){
-        visited[x] = true;
-        for(int i = 1; i<=n; i++){
-            if(arr[i][x] == 1 && !visited[i]){
-                dfs(i);
-            }
-        }
+    static void union(int a, int b){
+        int n1 = find(a);
+        int n2 = find(b);
+
+        parent[n1] = n2;
     }
+    static int find(int x){
+        if(x == parent[x]){
+            return x;
+        }
+        int root = find(parent[x]);
+        parent[x] = root;
+        return root;
+    }
+
+
 }
