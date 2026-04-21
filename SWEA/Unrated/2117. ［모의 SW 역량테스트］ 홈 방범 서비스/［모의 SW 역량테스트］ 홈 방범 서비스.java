@@ -1,69 +1,71 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Solution {
+    static int n, m, max;
+    static int[][] city;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
+        int t = Integer.parseInt(br.readLine().trim());
         for (int tc = 1; tc <= t; tc++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            StringBuilder sb = new StringBuilder();
-            int n = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken());
-            int[][] arr = new int[n][n];
-
-            // 배열 입력
+            StringTokenizer st = new StringTokenizer(br.readLine().trim());
+            n = Integer.parseInt(st.nextToken());
+            m = Integer.parseInt(st.nextToken());
+            city = new int[n][n];
+            max = 0;
             for (int i = 0; i < n; i++) {
-                st = new StringTokenizer(br.readLine());
+                st = new StringTokenizer(br.readLine().trim());
                 for (int j = 0; j < n; j++) {
-                    arr[i][j] = Integer.parseInt(st.nextToken());
+                    city[i][j] = Integer.parseInt(st.nextToken());
                 }
             }
-            int maxCount = 0;
-            // 하나씩 찾아본다
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    int cal = 0;
-                    int count = 0;
-                    int left = 0;
-                    int right = 0;
-                    for (int size = 1; size <= n + 1; size++) {
-                        count = 0;
-                        left = 0;
-                        right = 0;
-                        for (int k = i - size + 1; k <= i; k++) {
-                            for (int q = j - left; q <= j + right; q++) {
-                                if (q >= 0 && q < n && k >= 0 && k < n && arr[k][q] == 1) {
-                                    count++;
-                                }
-                            }
-                            if (k < i) {
-                                left++;
-                                right++;
-                            }
-                        }
-                        left--;
-                        right--;
-                        for (int k = i + 1; k <= i + size - 1; k++) {
-                            for (int q = j -left; q <= j + right; q++) {
-                                if (q >= 0 && q < n && k < n && k >= 0 && arr[k][q] == 1) {
-                                    count++;
-                                }
-                            }
-                            left--;
-                            right--;
-                        }
-                        cal = (count * m) - (size * size + (size - 1) * (size - 1));
-                        if (cal >= 0) {
-                            maxCount = Math.max(maxCount, count);
-                        }
-                    }
+            for(int i = 0; i<n; i++){
+                for(int j = 0; j<n; j++){
+                    bfs(i, j);
                 }
             }
-            sb.append("#" + tc + " " + maxCount);
-            System.out.println(sb);
+            System.out.println("#"+tc+" "+max);
         }
+    }
+
+    public static void bfs(int tx, int ty) {
+        Queue<int[]> q = new LinkedList<>();
+        boolean[][] visited = new boolean[n][n];
+        q.add(new int[]{tx, ty});
+        visited[tx][ty] = true;
+        int count = 0;
+        int k = 1;
+        while (!q.isEmpty()) {
+            int size = q.size();
+
+            for(int s = 0; s<size; s++){
+                int[] tmp = q.poll();
+                int x = tmp[0];
+                int y = tmp[1];
+                if(city[x][y] == 1) count++;
+
+                for(int d = 0; d<4; d++){
+                    int nx = x + dx[d];
+                    int ny = y + dy[d];
+
+                    if(nx < 0 || ny < 0 || nx>=n || ny >=n || visited[nx][ny]) continue;
+                    visited[nx][ny] = true;
+                    q.add(new int[]{nx,ny});
+                }
+            }
+            int cal = k*k + (k-1) * (k-1);
+            if(m*count>=cal){
+                max = Math.max(count, max);
+            }
+            k++;
+        }
+
     }
 }
