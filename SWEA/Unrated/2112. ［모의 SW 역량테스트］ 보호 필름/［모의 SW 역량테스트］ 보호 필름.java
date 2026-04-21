@@ -4,8 +4,8 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Solution {
-    static int[][] arr;
-    static int d, w, k, total, min;
+    static int d, w, k, min;
+    static int[][] film;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,72 +15,74 @@ public class Solution {
             d = Integer.parseInt(st.nextToken());
             w = Integer.parseInt(st.nextToken());
             k = Integer.parseInt(st.nextToken());
-            total = 0;
+            film = new int[d][w];
             min = Integer.MAX_VALUE;
-            arr = new int[d][w];
             for (int i = 0; i < d; i++) {
                 st = new StringTokenizer(br.readLine().trim());
                 for (int j = 0; j < w; j++) {
-                    arr[i][j] = Integer.parseInt(st.nextToken());
+                    film[i][j] = Integer.parseInt(st.nextToken());
                 }
             }
-            cal(0, 0);
-            System.out.println("#" + tc + " " + min);
+            dfs(0,0);
+            System.out.println("#"+tc+" "+min);
         }
+
     }
 
-    static void cal(int start, int count) {
 
-        if (count >= min)
-            return;
-        if (start == d) {
-            if (check()) {
-                min = Math.min(count, min);
+    public static void dfs(int count, int idx) {
+        if(idx == d){
+            if(check()){
+                min = Math.min(min, count);
             }
-            return;
-
+            return ;
         }
 
-        int tmp[] = arr[start].clone();
+        if(count >= min) return;
+        // a : 0, b : 1
+        int[] tmp = film[idx].clone();
+        modify(idx, 0);
+        dfs(count+1, idx+1);
+        film[idx] = tmp.clone();
 
-        change(start, 0);
-        cal(start + 1, count + 1);
-        arr[start] = tmp.clone();
+        modify(idx, 1);
+        dfs(count +1, idx+1);
+        film[idx] = tmp.clone();
 
-        change(start, 1);
-        cal(start + 1, count + 1);
-        arr[start] = tmp.clone();
+        dfs(count, idx+1);
 
-        cal(start + 1, count);
     }
 
-    static boolean check() {
+    public static boolean check() {
 
-        for (int i = 0; i < w; i++) {
+        for(int i = 0; i<w; i++){
             int count = 1;
-            int comp = arr[0][i];
-            boolean pass = false;
-            for (int j = 1; j < d; j++) {
-                if (comp == arr[j][i]) {
+            int kind = 0;
+            for(int j = 0; j<d; j++){
+                if(j == 0){
+                    kind = film[j][i];
+                    continue;
+                }
+
+                if(film[j][i] == 0 && kind == 0){
                     count++;
-                } else {
+                } else if(film[j][i] == 1 && kind == 1){
+                    count++;
+                } else{
                     count = 1;
-                    comp = arr[j][i];
+                    kind = film[j][i];
                 }
-                if (count == k) {
-                    pass = true;
-                    break;
-                }
+
+                if(count >= k) break;
             }
-            if (!pass)
-                return false;
+            if(count<k) return false;
         }
         return true;
     }
 
-    static void change(int x, int a) {
-        for (int i = 0; i < w; i++) {
-            arr[x][i] = a;
+    public static void modify(int x, int kind){
+        for(int i = 0; i<w; i++){
+            film[x][i] = kind;
         }
     }
 }
