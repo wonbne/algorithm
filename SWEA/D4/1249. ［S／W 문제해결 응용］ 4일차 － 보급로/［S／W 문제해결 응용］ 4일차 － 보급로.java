@@ -1,62 +1,64 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class Solution {
-    static int n, min;
-    static int[][] arr;
-    static int[] dx = { -1, 1, 0, 0 };
-    static int[] dy = { 0, 0, -1, 1 };
-    static boolean[][] visited;
+    static int n;
+    static int INF = 987654321;
+    static int[][] map;
+    static int[][] dist;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int tc = Integer.parseInt(br.readLine().trim());
-        for (int t = 1; t <= tc; t++) {
+        int t = Integer.parseInt(br.readLine().trim());
+        for (int tc = 1; tc <= t; tc++) {
             n = Integer.parseInt(br.readLine().trim());
-            arr = new int[n][n];
-            visited = new boolean[n][n];
-            min = Integer.MAX_VALUE;
+            map = new int[n][n];
+            dist = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    dist[i][j] = INF;
+                }
+            }
             for (int i = 0; i < n; i++) {
                 String s = br.readLine().trim();
                 for (int j = 0; j < n; j++) {
-                    arr[i][j] = s.charAt(j) - '0';
+                    map[i][j] = s.charAt(j) - '0';
                 }
             }
-            bfs();
-            System.out.println("#"+t+" "+min);
 
+            dij();
+            System.out.println("#" + tc + " " + dist[n - 1][n - 1]);
         }
     }
 
-    public static void bfs() {
-        PriorityQueue<int[]> queue = new PriorityQueue<>(Comparator.comparing(o->o[2]));
-        queue.offer(new int[] { 0, 0, 0 });
-        visited[0][0] = true;
-        while (!queue.isEmpty()) {
-            int[] tmp = queue.poll();
+    public static void dij() {
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
+        pq.add(new int[]{0, 0, 0});
+        dist[0][0] = 0;
+        while (!pq.isEmpty()) {
+            int[] tmp = pq.poll();
+            int x = tmp[0];
+            int y = tmp[1];
+
+            if (x == n - 1 && y == n - 1) continue;
+
             for (int d = 0; d < 4; d++) {
-                int nx = tmp[0] + dx[d];
-                int ny = tmp[1] + dy[d];
-                int cnt = tmp[2];
-                if (nx == n - 1 && ny == n - 1) {
-                    min = Math.min(min, cnt);
-                    continue;
-                }
-                if (cnt >= min)
-                    continue;
+                int nx = x + dx[d];
+                int ny = y + dy[d];
 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= n)
-                    continue;
-                if (!visited[nx][ny]) {
-                    visited[nx][ny] = true;
-                    queue.offer(new int[] { nx, ny, cnt + arr[nx][ny] });
+                if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+
+                if (dist[nx][ny] > dist[x][y] + map[nx][ny]) {
+                    dist[nx][ny] = dist[x][y] + map[nx][ny];
+                    pq.add(new int[]{nx, ny, dist[nx][ny]});
                 }
+
             }
         }
     }
+
 }
