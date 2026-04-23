@@ -1,0 +1,60 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class test1 {
+    static int n;
+    static int[][] dp1, dp2;
+    static int[] arr1;
+    static int[] arr2;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine().trim());
+        for(int tc = 1; tc<=t ; tc++){
+            n = Integer.parseInt(br.readLine().trim());
+            dp1 = new int[n+1][n+1];
+            dp2 = new int[n+1][n+1];
+            arr1 = new int[n];
+            arr2 = new int[n];
+
+            StringTokenizer st = new StringTokenizer(br.readLine().trim());
+            for(int i = 0; i<n; i++){
+                arr1[i] = Integer.parseInt(st.nextToken());
+            }
+            st = new StringTokenizer(br.readLine().trim());
+            for(int i = 0; i<n; i++){
+                arr2[i] = Integer.parseInt(st.nextToken());
+            }
+
+            for(int i = 0; i<n; i++){
+                for(int j = i; j<n; j++){
+                    if(arr1[j-i] == arr2[j]) {
+                        dp1[i+1][j+1] = dp1[i+1][j] + 1;
+                    } else{
+                        dp1[i+1][j+1] = dp1[i+1][j];
+                    }
+                }
+            }
+
+            for(int i = 0; i<n; i++){
+                for(int j = i; j<n; j++){
+                    if(arr2[j-i] == arr1[j]) {
+                        dp2[i+1][j+1] = dp2[i+1][j] + 1;
+                    } else{
+                        dp2[i+1][j+1] = dp2[i+1][j];
+                    }
+                }
+            }
+
+            int max = 0;
+            for(int i = 0; i<n; i++){
+                max = Math.max(max, Math.max(dp1[i][n], dp2[i][n]));
+            }
+
+
+
+            System.out.println("#"+tc+" "+ max);
+        }
+    }
+}
