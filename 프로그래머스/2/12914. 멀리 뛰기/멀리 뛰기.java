@@ -1,23 +1,25 @@
 class Solution {
+    
+    static int[] memo;
+    
     public long solution(int n) {
         
-        int[] dp = new int[n+1];
+        memo = new int[n+1];
+        long answer = dfs(n);
+        return answer;
+    }
+    
+    public int dfs(int n){
+        if(n == 1) return 1;
+        if(n == 2) return 2;
         
-        dp[1] = 1;
-        
-        if(n >= 2){
-            dp[2] = 2;
-            
-            for(int i = 3; i<=n; i++){
-                dp[i] = (dp[i-1] + dp[i-2]) % 1234567;
-            }
+        if(memo[n] != 0){
+            return memo[n];
         }
         
+        memo[n] = (dfs(n-1) + dfs(n-2)) % 1234567;
         
-        
-        
-        long answer = dp[n];
-        return answer;
+        return memo[n];
     }
     
 }
