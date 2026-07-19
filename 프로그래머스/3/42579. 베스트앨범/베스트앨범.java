@@ -5,7 +5,6 @@ class Solution {
 
         Map<String, Integer> map = new HashMap<>();
 
-        // 장르별 총 재생수
         for (int i = 0; i < genres.length; i++) {
             map.put(genres[i], map.getOrDefault(genres[i], 0) + plays[i]);
         }
