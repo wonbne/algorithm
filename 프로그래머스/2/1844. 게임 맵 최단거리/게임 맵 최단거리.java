@@ -1,42 +1,56 @@
 import java.util.*;
+
 class Solution {
-    int n;
-    int m;
-    int[][] map;
-    boolean[][] visited;
-    int[] dx = {0,0,-1,1};
-    int[] dy = {-1,1,0,0};
-    int[][] distance;
+    
+    static int[][] map;
+    static int[] dx = {-1,1,0,0};
+    static int[] dy = {0,0,-1,1};
+    
+    static boolean[][] visited;
+    static int n,m;
+    static int min = Integer.MAX_VALUE;
     public int solution(int[][] maps) {
-        n = maps.length;
-        m = maps[0].length;
+        int answer = 0;
         map = maps;
+        m = maps[0].length;
+        n = maps.length;
         visited = new boolean[n][m];
-        distance = new int[n][m];
-        distance[0][0] = 1;
-        bfs(0,0);
-        return distance[n-1][m-1] == 0 ? -1 : distance[n-1][m-1];
+        bfs();
+        if(min == Integer.MAX_VALUE){
+            min = -1;
+        }
+        
+        answer = min;
+        return answer;
     }
-    public void bfs(int x, int y){
+    
+    public void bfs(){
         Queue<int[]> q = new LinkedList<>();
-        visited[x][y] = true;
-        q.add(new int[]{x,y});
+        q.add(new int[]{0,0,1});
+        visited[0][0] = true;
         while(!q.isEmpty()){
-            int[] cur = q.poll();
-            int cx = cur[0];
-            int cy = cur[1];
-            for(int i = 0; i<4; i++){
-                int nx = dx[i] + cx;
-                int ny = dy[i] + cy;
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m){
-                    if(!visited[nx][ny] && map[nx][ny] == 1){
-                        visited[nx][ny] = true;
-                        q.add(new int[]{nx,ny});
-                        distance[nx][ny] = distance[cx][cy] + 1;
-                    }
+            int[] tmp = q.poll();
+            int x = tmp[0];
+            int y = tmp[1];
+            int count = tmp[2];
+            for(int d = 0; d<4; d++){
+                int nx = x + dx[d];
+                int ny = y + dy[d];
+                
+                if(nx == n-1 && ny == m-1){
+                    min = Math.min(min, count+1);
                 }
+                
+                if(nx < 0 || ny < 0 || nx>=n || ny >= m || map[nx][ny] == 0 || visited[nx][ny] == true){
+                    continue;
+                }
+                
+                
+                visited[nx][ny] = true;
+                q.add(new int[]{nx,ny,count+1});
             }
         }
-
+        
+        
     }
 }
